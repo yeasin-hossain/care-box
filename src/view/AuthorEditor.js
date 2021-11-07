@@ -8,8 +8,8 @@ function AuthorEditor({ action, info, setInfo }) {
             <Form.Group className="mb-3" controlId="formBasicEmail">
                 <Form.Label>Title</Form.Label>
                 <Form.Control
-                    value={info.title || ''}
-                    onChange={(value) => setInfo(prev => ({ ...prev, title: value.target.value }))}
+                    value={info.Title || ''}
+                    onChange={(value) => setInfo(prev => ({ ...prev, Title: value.target.value }))}
                     type="text"
                     placeholder="Enter Title" />
 
@@ -30,7 +30,7 @@ function AuthorEditor({ action, info, setInfo }) {
                 <Form.Control
                     value={info.Email || ''}
                     onChange={(value) => setInfo(prev => ({ ...prev, Email: value.target.value }))}
-                    type="email"
+                    type="Email"
                     placeholder="Email" />
             </Form.Group>
 

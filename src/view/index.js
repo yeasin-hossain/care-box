@@ -5,6 +5,7 @@ import Item from './Item';
 import './style.css'
 import Modal from 'react-modal';
 import AuthorEditor from './AuthorEditor';
+import { toast } from 'react-toastify';
 
 const customStyles = {
     content: {
@@ -17,10 +18,16 @@ const customStyles = {
         width: '600px'
     },
 };
+
+
+
 function View() {
     const [authorInfo, setAuthorInfo] = useState([]);
     const [addAuthorInfo, setAddAuthorInfo] = useState({});
     const [modalIsOpen, setIsOpen] = useState(false);
+    const [isEdit, setEdit] = useState(false);
+
+    // fetching all Data from server
     useEffect(() => {
         axios.get(`https://care-box-backend.herokuapp.com/api/v1/applicant_test/`).then(res => setAuthorInfo(res.data))
     }, []);
@@ -28,24 +35,53 @@ function View() {
     const saveAuthor = async (e) => {
         e.preventDefault()
         try {
-            console.log(addAuthorInfo)
-            axios.post(`https://care-box-backend.herokuapp.com/api/v1/applicant_test/`, addAuthorInfo).then(res => console.log(res));
-            // fetch('https://care-box-backend.herokuapp.com/api/v1/applicant_test/', {
-            //     method: 'POST', // or 'PUT'
+            // converting to form data
+            const form = new FormData()
+            const a = Object.entries(addAuthorInfo);
+            a.map(b => form.append(b[0], b[1]));
 
-            //     body: addAuthorInfo,
-            // })
-            //     .then(response => response.json())
-            //     .then(data => console.log(data))
-            //     .catch(err => console.error(err));
+            //if make edit request, it will be true and call edit option
+            if (!isEdit) {
+                axios.post(`https://care-box-backend.herokuapp.com/api/v1/applicant_test/`, form, {
+                    headers:
+                    {
+                        "Custom-User-Agent": "gsdf#g3243F466$",
+                    }
+                }).then(res => {
+                    console.log(res)
+                    toast.success(res.data.message);
+                    setEdit(false)
+                    setIsOpen(false)
+                });
+            } else {
+                axios.put(`https://care-box-backend.herokuapp.com/api/v1/applicant_test/update_blog/${addAuthorInfo.id}/`, form, {
+                    headers:
+                    {
+                        "Custom-User-Agent": "gsdf#g3243F466$",
+                    }
+                }).then(res => {
+                    console.log(res)
+                    toast.success(res.data.message);
+                    setEdit(false)
+                    setIsOpen(false)
+                });
+            }
+
+
         } catch (error) {
             console.log(error)
         }
     }
+    const editEnable = (e) => {
+        console.log(e)
+        setIsOpen(true);
+        setAddAuthorInfo(e)
+        setEdit(true)
+    }
     return (
         <div>
             <Button onClick={() => setIsOpen(true)}>
-                Add Author
+                Add Blog
             </Button>
             <Table striped bordered hover variant="dark">
                 <thead>
@@ -59,7 +95,7 @@ function View() {
                     </tr>
                 </thead>
                 <tbody>
-                    {authorInfo && authorInfo.map(author => <Item key={author.id} item={author} />)}
+                    {authorInfo && authorInfo.map(author => <Item key={author.id} item={author} editEnable={editEnable} />)}
                 </tbody>
             </Table>
 
