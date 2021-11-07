@@ -70,8 +70,11 @@ function View() {
 
         } catch (error) {
             console.log(error)
+            toast.error('something want wrong, please try again')
         }
     }
+
+    // work for edit enable
     const editEnable = (e) => {
         console.log(e)
         setIsOpen(true);
@@ -98,7 +101,7 @@ function View() {
                     {authorInfo && authorInfo.map(author => <Item key={author.id} item={author} editEnable={editEnable} />)}
                 </tbody>
             </Table>
-
+            {/* editor model */}
             <Modal
                 isOpen={modalIsOpen}
                 style={customStyles}
